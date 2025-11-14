@@ -17,12 +17,28 @@ namespace OrderingSystem.Domain.DbModels
             Email = email;
             Phone = phone;
         }
-
+        public static Customers CreateFromDb(
+        int id, string name, string email, string phone,
+        DateTime createdAt, bool isDeleted)
+        {
+            return new Customers
+            {
+                Id = id,
+                Name = name,
+                Email = email,
+                Phone = phone,
+                CreatedAt = createdAt,
+                IsDeleted = isDeleted
+            };
+        }
+        public int Id { get; private set; }
         public string Name { get; private set; }
         public string Email { get; private set; }
         public string Phone { get; private set; }
+        public DateTime CreatedAt { get; private set; }
 
         public bool IsDeleted { get; private set; }
+        public bool IsActive { get; private set; }
         public DateTime? DeletedAt { get; private set; }
 
       

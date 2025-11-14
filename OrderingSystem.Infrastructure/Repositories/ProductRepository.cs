@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingSystem.Application.Interfaces.Repositories
+namespace OrderingSystem.Infrastructure.Repositories
 {
-    internal class ICustomerRepository
+    internal class ProductRepository
     {
     }
 }

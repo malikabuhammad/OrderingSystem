@@ -22,8 +22,4 @@
     <ProjectReference Include="..\OrderingSystem.Domain\OrderingSystem.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>

@@ -24,6 +24,7 @@ namespace OrderingSystem.Domain.DbModels
         public string Sku { get; private set; }
         public decimal Price { get; private set; }
         public int StockQuantity { get; private set; }
+        public bool IsActive { get; private set; }
 
         public void Update(string name, decimal price)
         {

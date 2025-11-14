@@ -21,14 +21,9 @@ namespace OrderingSystem.Domain.DbModels
 
         public int CustomerId { get; private set; }
         public DateTime OrderDate { get; private set; }
-
         public int StatusId { get; private set; }
-
         public decimal TotalAmount { get; private set; }
-
         public IReadOnlyCollection<OrderItems> Items => _items;
-
-
         public void AddItem(OrderItems item)
         {
             _items.Add(item);
