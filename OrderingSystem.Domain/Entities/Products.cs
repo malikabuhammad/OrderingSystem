@@ -20,11 +20,14 @@ namespace OrderingSystem.Domain.DbModels
             StockQuantity = stockQuantity;
         }
 
+        public int Id { get; private set; }
         public string Name { get; private set; }
-        public string Sku { get; private set; }
+        public string SKU { get; private set; }
         public decimal Price { get; private set; }
         public int StockQuantity { get; private set; }
+        public DateTime CreatedAt { get; private set; }
         public bool IsActive { get; private set; }
+        public bool IsDeleted { get; private set; }
 
         public void Update(string name, decimal price)
         {
@@ -38,7 +41,7 @@ namespace OrderingSystem.Domain.DbModels
                 throw new DomainException("Quantity must be greater than 0.");
 
             if (StockQuantity < qty)
-                throw new DomainException($"Insufficient stock for product SKU {Sku}.");
+                throw new DomainException($"Insufficient stock for product SKU {SKU}.");
 
             StockQuantity -= qty;
 
@@ -52,5 +55,35 @@ namespace OrderingSystem.Domain.DbModels
             StockQuantity += qty;
 
         }
+        public void MarkDeleted()
+        {
+            IsDeleted = true;
+        }
+
+        
+        public static Products CreateFromDb(
+         int id,
+         string name,
+         string sku,
+         decimal price,
+         int stockQuantity,
+         DateTime createdAt,
+         bool isDeleted,
+         bool isActive)
+        {
+            return new Products
+            {
+                Id = id,
+                Name = name,
+                SKU = sku,
+                Price = price,
+                StockQuantity = stockQuantity,
+                CreatedAt = createdAt,
+                IsDeleted = isDeleted,
+                IsActive = isActive
+            };
+
+        }
     }
 }
+    
