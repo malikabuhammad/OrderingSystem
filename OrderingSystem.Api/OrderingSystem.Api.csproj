@@ -14,4 +14,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OrderingSystem.Application\OrderingSystem.Application.csproj" />
+  </ItemGroup>
+
 </Project>
