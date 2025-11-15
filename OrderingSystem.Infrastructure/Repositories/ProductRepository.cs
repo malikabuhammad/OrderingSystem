@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OrderingSystem.Application.Interfaces;
 using OrderingSystem.Domain.DbModels;
- using OrderingSystem.Infrastructure.Extensions;
+using OrderingSystem.Infrastructure.Extensions;
 using OrderingSystem.Infrastructure.Extensions.OrderingSystem.Infrastructure.Extensions;
 using OrderingSystem.Infrastructure.Persistence;
 using System.Data;
@@ -22,19 +22,18 @@ namespace OrderingSystem.Infrastructure.Repositories
             _config = config;
         }
 
-        private string ConnStr => _config.GetConnectionString("DefaultConnection");
- 
-        public async Task<List<Products>> GetPagedAsync(
-            int pageNumber,
-            int pageSize,
-            string? search)
+        private string ConnStr => _config.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+
+        public async Task<(int TotalCount, List<Products> Items)> GetPagedAsync(int pageNumber, int pageSize, string? search)
         {
-            var list = new List<Products>();
+            var items = new List<Products>();
+            int totalCount = 0;
 
             using var conn = new SqlConnection(ConnStr);
             await conn.OpenAsync();
 
-            using var cmd = new SqlCommand("sp_GetProductsPaged", conn)
+            using var cmd = new SqlCommand("GetProductsPaged", conn)
             {
                 CommandType = CommandType.StoredProcedure
             };
@@ -45,9 +44,16 @@ namespace OrderingSystem.Infrastructure.Repositories
 
             using var reader = await cmd.ExecuteReaderAsync();
 
+
+            if (await reader.ReadAsync())
+                totalCount = reader.GetInt32(0);
+
+            await reader.NextResultAsync();
+
+
             while (await reader.ReadAsync())
             {
-                list.Add(Products.CreateFromDb(
+                items.Add(Products.CreateFromDb(
                     reader.GetIntSafe("Id"),
                     reader.GetStringSafe("Name")!,
                     reader.GetStringSafe("SKU")!,
@@ -59,12 +65,13 @@ namespace OrderingSystem.Infrastructure.Repositories
                 ));
             }
 
-            return list;
+            return (totalCount, items);
         }
 
-        public  Task<int> CountAsync(string? search)
+
+        public Task<int> CountAsync(string? search)
         {
-          return Task.FromResult(_context.Products.Count(a=>a.IsActive==true));
+            return Task.FromResult(_context.Products.Count(a => a.IsActive == true));
 
         }
 
@@ -84,7 +91,7 @@ namespace OrderingSystem.Infrastructure.Repositories
             return Convert.ToInt32(result) > 0;
         }
 
-           public async Task<Products?> GetByIdAsync(int id)
+        public async Task<Products?> GetByIdAsync(int id)
         {
             using var conn = new SqlConnection(ConnStr);
             await conn.OpenAsync();
@@ -121,7 +128,7 @@ namespace OrderingSystem.Infrastructure.Repositories
             return (product != null && !product.IsDeleted) ? product : null;
         }
 
- 
+
         public async Task AddAsync(Products entity)
         {
             await _context.Products.AddAsync(entity);
@@ -148,7 +155,7 @@ namespace OrderingSystem.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
- 
+
         public Task<List<Products>> GetAllAsync()
         {
             return _context.Products
@@ -166,9 +173,11 @@ namespace OrderingSystem.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> SkuExistsAsync(string sku, int? excludeId = null)
+        public async Task<bool> SkuExistsAsync(string sku, int? excludeId = null)
         {
-            throw new NotImplementedException();
+            return await _context.Products
+                .AnyAsync(p => p.SKU == sku && (excludeId == null || p.Id != excludeId));
         }
+
     }
 }
