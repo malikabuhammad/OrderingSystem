@@ -1,5 +1,7 @@
-﻿using OrderingSystem.Application.Repositories;
+﻿using OrderingSystem.Application.DTOs.Orders;
+using OrderingSystem.Application.Repositories;
 using OrderingSystem.Domain.DbModels;
+using OrderingSystem.Domain.ProcedureEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +12,10 @@ namespace OrderingSystem.Application.Interfaces
 {
     public interface IOrderRepository : IRepository<Orders>
     {
-        Task<Orders?> GetFullOrderAsync(int id);
+        Task<CreateOrderResult> CreateOrderAsync(int customerId, List<CreateOrderItemDto> items);
 
-        Task<List<Orders>> GetPagedOrdersAsync(
+        Task<OrderDetailsResult?> GetFullOrderAsync(int id);
+        Task<List<OrderListResult>> GetPagedOrdersAsync(
             int pageNumber,
             int pageSize,
             int? customerId,

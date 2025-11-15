@@ -1,6 +1,7 @@
 ﻿using OrderingSystem.Domain.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,10 +16,11 @@ namespace OrderingSystem.Domain.DbModels
         public Products(string name, string sku, decimal price, int stockQuantity)
         {
             Name = name;
-            Sku = sku;
+            SKU = sku;
             Price = price;
             StockQuantity = stockQuantity;
         }
+        [Key]
 
         public int Id { get; private set; }
         public string Name { get; private set; }

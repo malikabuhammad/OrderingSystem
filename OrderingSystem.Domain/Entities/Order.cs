@@ -1,6 +1,7 @@
 ﻿using OrderingSystem.Domain.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace OrderingSystem.Domain.DbModels
             StatusId = 1; // Pending
         }
 
+        [Key]
+        public int Id { get; private set; }
         public int CustomerId { get; private set; }
         public DateTime OrderDate { get; private set; }
         public int StatusId { get; private set; }

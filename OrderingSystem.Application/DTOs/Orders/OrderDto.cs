@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingSystem.Domain.ProcedureEntities
+namespace OrderingSystem.Application.DTOs.Orders
 {
-    internal class OrderListItemResult
+    internal class OrderDto
     {
     }
+    
+
 }

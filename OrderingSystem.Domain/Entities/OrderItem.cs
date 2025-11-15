@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace OrderingSystem.Domain.DbModels
             UnitPrice = unitPrice;
             LineTotal = quantity * unitPrice;
         }
+        [Key]
 
         public int Id { get; private set; }
         public int OrderId { get; private set; }
