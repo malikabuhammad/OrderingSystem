@@ -4,6 +4,7 @@ namespace OrderingSystem.Api.Controllers
 {
     using global::OrderingSystem.Application.DTOs.Customers;
     using global::OrderingSystem.Application.Services;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
   
 
@@ -11,6 +12,7 @@ namespace OrderingSystem.Api.Controllers
     {
         [ApiController]
         [Route("api/[controller]")]
+        [Authorize] 
         public class CustomersController : ControllerBase
         {
             private readonly ICustomerService _service;
@@ -41,13 +43,16 @@ namespace OrderingSystem.Api.Controllers
                 return Ok(result);
             }
 
+
+            [Authorize(Roles = "Admin")]
             [HttpPost("CreateCustomer")]
             public async Task<IActionResult> CreateCustomer(CreateCustomerDto dto)
             {
                 var created = await _service.CreateAsync(dto);
                 return CreatedAtAction(nameof(GetCustomerById), new { id = created.Id }, created);
             }
-
+            [Authorize(Roles = "Admin")]
+            
             [HttpDelete("DeleteCustomer/{id}")]
             public async Task<IActionResult> DeleteCustomer(int id)
             {

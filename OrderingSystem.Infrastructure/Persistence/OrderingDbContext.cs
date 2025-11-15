@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderingSystem.Domain.DbModels;
- 
+using OrderingSystem.Domain.Entities;
+
 namespace OrderingSystem.Infrastructure.Persistence;
 
 public class OrderingDbContext : DbContext
@@ -12,11 +13,25 @@ public class OrderingDbContext : DbContext
     public DbSet<Products> Products => Set<Products>();
     public DbSet<Orders> Orders => Set<Orders>();
     public DbSet<OrderItems> OrderItems => Set<OrderItems>();
-    
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(OrderingDbContext).Assembly);
+    public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
 
-        base.OnModelCreating(modelBuilder);
-    }
+protected override void OnModelCreating(ModelBuilder b)
+{
+    b.Entity<UserRole>()
+     .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+    b.Entity<UserRole>()
+     .HasOne(ur => ur.User)
+     .WithMany(u => u.Roles)
+     .HasForeignKey(ur => ur.UserId);
+
+    b.Entity<UserRole>()
+     .HasOne(ur => ur.Role)
+     .WithMany()
+     .HasForeignKey(ur => ur.RoleId);
 }
+    }
+
+ 
