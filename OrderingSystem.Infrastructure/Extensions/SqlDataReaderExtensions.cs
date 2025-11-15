@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace OrderingSystem.Infrastructure.Extensions
 {
     using Microsoft.Data.SqlClient;
+    using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
     namespace OrderingSystem.Infrastructure.Extensions
     {
@@ -38,8 +39,8 @@ namespace OrderingSystem.Infrastructure.Extensions
  
             public static int GetIntSafe(this SqlDataReader reader, string columnName)
             {
-                int ordinal = reader.GetOrdinal(columnName);
-                return reader.IsDBNull(ordinal) ? 0 : reader.GetInt32(ordinal);
+                var index = reader.GetOrdinal(columnName);
+                return reader.IsDBNull(index) ? 0 : reader.GetInt32(index);
             }
 
             public static int GetIntSafe(this SqlDataReader reader, int ordinal)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrderingSystem.Application.Services
 {
-    public class OrderService:IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IOrderRepository _repo;
 
@@ -28,22 +28,7 @@ namespace OrderingSystem.Application.Services
             return _repo.GetFullOrderAsync(id);
         }
 
-        public Task<List<OrderListResult>> GetPagedAsync(
-            int pageNumber,
-            int pageSize,
-            int? customerId,
-            int? status,
-            DateTime? startDate,
-            DateTime? endDate)
-        {
-            return _repo.GetPagedOrdersAsync(
-                pageNumber,
-                pageSize,
-                customerId,
-                status,
-                startDate,
-                endDate);
-        }
+
 
         public Task<int> CountAsync(
             int? customerId,
@@ -54,14 +39,36 @@ namespace OrderingSystem.Application.Services
             return _repo.CountAsync(customerId, status, startDate, endDate);
         }
 
-        public Task<CreateOrderResult> CreateAsync(CreateOrderItemDto dto)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public Task<OrderDetailsResult?> GetFullAsync(int id)
         {
-            throw new NotImplementedException();
+            return _repo.GetFullOrderAsync(id);
+        }
+
+        Task<(int TotalCount, List<OrderListResult> Items)> IOrderService.GetPagedAsync(int pageNumber, int pageSize, int? customerId, int? status, DateTime? startDate, DateTime? endDate)
+        {
+            return _repo.GetPagedOrdersAsync(
+              pageNumber,
+              pageSize,
+              customerId,
+              status,
+              startDate,
+              endDate);
+        }
+
+       
+
+        public async Task<bool> UpdateStatusAsync(UpdateOrderStatusDto dto)
+        {
+            var order = await _repo.GetByIdAsync(dto.OrderId);
+            if (order == null) return false;
+
+            order.UpdateStatus(dto.StatusId);
+
+            _repo.Update(order);
+            await _repo.SaveChangesAsync();
+            return true;
         }
     }
 }

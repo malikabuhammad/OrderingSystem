@@ -8,13 +8,7 @@ public interface ICustomerRepository : IRepository<Customers>
     Task<Customers?> GetActiveByIdAsync(int id);
     Task<bool> EmailExistsAsync(string email);
 
-    Task<List<Customers>> GetPagedAsync(
-        int pageNumber,
-        int pageSize,
-        string? nameFilter,
-        string? emailFilter);
+    Task<(List<Customers> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize, string? nameFilter, string? emailFilter);
 
-    Task<int> CountAsync(
-        string? nameFilter,
-        string? emailFilter);
+   
 }

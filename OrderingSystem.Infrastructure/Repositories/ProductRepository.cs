@@ -25,7 +25,7 @@ namespace OrderingSystem.Infrastructure.Repositories
         private string ConnStr => _config.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 
-        public async Task<(int TotalCount, List<Products> Items)> GetPagedAsync(int pageNumber, int pageSize, string? search, string Name, string SKU)
+        public async Task<(int TotalCount, List<Products> Items)> GetPagedAsync(int pageNumber, int pageSize, string? search, string? Name, string? SKU)
         {
             var items = new List<Products>();
             int totalCount = 0;
@@ -96,7 +96,7 @@ namespace OrderingSystem.Infrastructure.Repositories
             using var conn = new SqlConnection(ConnStr);
             await conn.OpenAsync();
 
-            using var cmd = new SqlCommand("sp_GetProductById", conn)
+            using var cmd = new SqlCommand("GetProductById", conn)
             {
                 CommandType = CommandType.StoredProcedure
             };

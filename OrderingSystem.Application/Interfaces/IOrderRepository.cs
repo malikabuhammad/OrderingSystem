@@ -15,13 +15,7 @@ namespace OrderingSystem.Application.Interfaces
         Task<CreateOrderResult> CreateOrderAsync(int customerId, List<CreateOrderItemDto> items);
 
         Task<OrderDetailsResult?> GetFullOrderAsync(int id);
-        Task<List<OrderListResult>> GetPagedOrdersAsync(
-            int pageNumber,
-            int pageSize,
-            int? customerId,
-            int? status,
-            DateTime? startDate,
-            DateTime? endDate);
+        Task<(int TotalCount, List<OrderListResult> Items)> GetPagedOrdersAsync(int pageNumber,int pageSize,int? customerId,int? status,DateTime? startDate,DateTime? endDate);
 
         Task<int> CountAsync(
             int? customerId,

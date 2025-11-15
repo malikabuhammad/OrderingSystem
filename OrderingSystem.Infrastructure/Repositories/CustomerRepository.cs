@@ -84,13 +84,10 @@ namespace OrderingSystem.Infrastructure.Repositories
             return await _context.Customers.FindAsync(id);
         }
 
-        public async Task<List<Customers>> GetPagedAsync(
-        int pageNumber,
-        int pageSize,
-        string? nameFilter,
-        string? emailFilter)
+        public async Task<(List<Customers> Items, int TotalCount)> GetPagedAsync(int pageNumber,int pageSize,string? nameFilter,string? emailFilter)
         {
             var list = new List<Customers>();
+            int totalCount = 0;
 
             using var conn = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             await conn.OpenAsync();
@@ -102,25 +99,35 @@ namespace OrderingSystem.Infrastructure.Repositories
 
             cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
             cmd.Parameters.AddWithValue("@PageSize", pageSize);
-            cmd.Parameters.AddWithValue("@NameFilter", (object?)nameFilter ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@EmailFilter", (object?)emailFilter ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@CustomerName", (object?)nameFilter ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@CustomerEmail", (object?)emailFilter ?? DBNull.Value);
 
             using var reader = await cmd.ExecuteReaderAsync();
-
+ 
             while (await reader.ReadAsync())
             {
                 list.Add(Customers.CreateFromDb(
                     reader.GetIntSafe("Id"),
-                    reader.GetStringSafe("Name")??string.Empty,
-                    reader.GetStringSafe("Email")??string.Empty,
-                    reader.GetStringSafe("Phone")??string.Empty,
+                    reader.GetStringSafe("CustomerName") ?? string.Empty,
+                    reader.GetStringSafe("Email") ?? string.Empty,
+                    reader.GetStringSafe("Phone") ?? string.Empty,
                     reader.GetDateTimeSafe("CreatedAt"),
-                    reader.GetBoolSafe("IsDeleted")
+                    reader.GetBoolean("IsDeleted"),
+                    reader.GetBoolSafe("IsActive")
                 ));
             }
+ 
+            if (await reader.NextResultAsync())
+            {
+                if (await reader.ReadAsync())
+                {
+                    totalCount = reader.GetInt32(reader.GetOrdinal("TotalCount"));
+                }
+            }
 
-            return list;
+            return (list, totalCount);
         }
+
 
         public Task<int> SaveChangesAsync()
         {

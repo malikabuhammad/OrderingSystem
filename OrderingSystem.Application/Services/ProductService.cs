@@ -29,7 +29,7 @@ namespace OrderingSystem.Application.Services
             };
         }
 
-        public async Task<(int TotalCount, List<ProductDto> Items)> GetPagedAsync(int pageNumber,int pageSize,string? search,string name,string sku)
+        public async Task<(int TotalCount, List<ProductDto> Items)> GetPagedAsync(int pageNumber,int pageSize,string? search,string? name,string? sku)
         {
             var (total, items) = await _repo.GetPagedAsync(pageNumber, pageSize, search, name, sku);
 
@@ -66,12 +66,12 @@ namespace OrderingSystem.Application.Services
             };
         }
 
-        public async Task<ProductDto?> UpdateAsync(int id, CreateProductDto dto)
+        public async Task<ProductDto?> UpdateAsync(int id, UpdateProductDto dto)
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null || entity.IsDeleted) return null;
 
-            if (dto.SKU != entity.SKU && await _repo.SkuExistsAsync(dto.SKU))
+            if (dto.SKU != entity.SKU && await _repo.SkuExistsAsync(dto.SKU, id))
                 throw new InvalidOperationException("SKU already exists.");
 
             entity.Update(dto.Name, dto.SKU, dto.Price, dto.StockQuantity);
@@ -85,10 +85,10 @@ namespace OrderingSystem.Application.Services
                 Name = entity.Name,
                 SKU = entity.SKU,
                 Price = entity.Price,
-                StockQuantity = entity.StockQuantity
+                StockQuantity = entity.StockQuantity,
+                IsActive = entity.IsActive
             };
         }
-
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await _repo.GetByIdAsync(id);

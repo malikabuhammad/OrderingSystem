@@ -45,6 +45,10 @@ namespace OrderingSystem.Domain.DbModels
             TotalAmount = _items.Sum(x => x.LineTotal);
 
         }
+        public void UpdateStatus(int statusId)
+        {
+            StatusId = statusId;
+        }
 
 
 

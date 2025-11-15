@@ -35,9 +35,9 @@ namespace OrderingSystem.Application.Services
             string? email)
         {
             var items = await _repo.GetPagedAsync(pageNumber, pageSize, name, email);
-            var count = await _repo.CountAsync(name, email);
+       
 
-            return (count, items.Select(c => new CustomerDto
+            return (items.TotalCount, items.Items.Select(c => new CustomerDto
             {
                 Id = c.Id,
                 Name = c.Name,

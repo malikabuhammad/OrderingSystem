@@ -14,7 +14,7 @@ namespace OrderingSystem.Application.Interfaces
         Task<Products?> GetBySkuAsync(string sku);
         Task<bool> SkuExistsAsync(string sku, int? excludeId = null);
 
-        Task<(int TotalCount, List<Products> Items)> GetPagedAsync(int pageNumber,int pageSize,string? search, string Name , string SKU);
+        Task<(int TotalCount, List<Products> Items)> GetPagedAsync(int pageNumber,int pageSize,string? search, string? Name , string? SKU);
 
          Task<int> CountAsync(string? searchTerm);
     }

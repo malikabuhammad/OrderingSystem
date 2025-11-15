@@ -21,7 +21,7 @@ namespace OrderingSystem.Domain.DbModels
         public DateTime CreatedAt { get; private set; }
         public bool IsDeleted { get; private set; }
         public bool IsActive { get; private set; }
-        public DateTime? DeletedAt { get; private set; }
+   
 
         private Customers() { }
 
@@ -32,7 +32,7 @@ namespace OrderingSystem.Domain.DbModels
             Phone = phone;
         }
         public static Customers CreateFromDb(int id, string name, string email, string phone,
-            DateTime createdAt, bool isDeleted)
+            DateTime createdAt, bool isDeleted,bool isActive)
         {
             return new Customers
             {
@@ -41,7 +41,8 @@ namespace OrderingSystem.Domain.DbModels
                 Email = email,
                 Phone = phone,
                 CreatedAt = createdAt,
-                IsDeleted = isDeleted
+                IsDeleted = isDeleted,
+                IsActive=isActive
             };
         }
         public static Customers Create(string name, string email, string phone)
@@ -66,8 +67,7 @@ namespace OrderingSystem.Domain.DbModels
         {
             IsDeleted = true;
             IsActive = false;
-            DeletedAt = DateTime.UtcNow;
-        }
+         }
     }
 
 }

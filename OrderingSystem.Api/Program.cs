@@ -13,12 +13,12 @@ builder.Services.AddDbContext<OrderingDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-//builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-////builder.Services.AddScoped<IProductRepository, ProductRepository>();
-////builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-//builder.Services.AddScoped<ICustomerService, CustomerService>();
-////builder.Services.AddScoped<IProductService, ProductService>();
-////builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 
 builder.Services.AddControllers();
@@ -29,11 +29,16 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+        options.RoutePrefix = string.Empty; // Make Swagger the root page
+    });
 }
+
 
 app.UseHttpsRedirection();
 

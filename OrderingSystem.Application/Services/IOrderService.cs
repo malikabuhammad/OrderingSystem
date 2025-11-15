@@ -8,18 +8,13 @@ using System.Threading.Tasks;
 
 namespace OrderingSystem.Application.Services
 {
-  
-        public interface IOrderService
-        {
-            Task<CreateOrderResult> CreateAsync(CreateOrderItemDto dto);
-            Task<OrderDetailsResult?> GetFullAsync(int id);
-            Task<List<OrderListResult>> GetPagedAsync(
-                int pageNumber,
-                int pageSize,
-                int? customerId,
-                int? status,
-                DateTime? startDate,
-                DateTime? endDate);
-        }
+
+    public interface IOrderService
+    {
+        Task<CreateOrderResult> CreateAsync(CreateOrderDto dto);
+        Task<OrderDetailsResult?> GetFullAsync(int id);
+        Task<(int TotalCount, List<OrderListResult> Items)> GetPagedAsync(int pageNumber, int pageSize, int? customerId, int? statusId, DateTime? startDate, DateTime? endDate);
+        Task<bool> UpdateStatusAsync(UpdateOrderStatusDto dto);
     }
- 
+}
+

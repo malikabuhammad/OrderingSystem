@@ -166,9 +166,16 @@ namespace OrderingSystem.Infrastructure.Repositories
             return header;
         }
 
-        public async Task<List<OrderListResult>> GetPagedOrdersAsync(int pageNumber, int pageSize, int? customerId, int? status, DateTime? startDate, DateTime? endDate)
+        public async Task<(int TotalCount, List<OrderListResult> Items)> GetPagedOrdersAsync(
+    int pageNumber,
+    int pageSize,
+    int? customerId,
+    int? status,
+    DateTime? startDate,
+    DateTime? endDate)
         {
-            var list = new List<OrderListResult>();
+            var items = new List<OrderListResult>();
+            int totalCount = 0;
 
             using var conn = new SqlConnection(ConnStr);
             await conn.OpenAsync();
@@ -189,19 +196,26 @@ namespace OrderingSystem.Infrastructure.Repositories
 
             while (await reader.ReadAsync())
             {
-                list.Add(new OrderListResult
+                items.Add(new OrderListResult
                 {
                     OrderId = reader.GetIntSafe("OrderId"),
                     OrderDate = reader.GetDateTimeSafe("OrderDate"),
-                    Status = reader.GetStringSafe("Status")??string.Empty,
+                    StatusDesc = reader.GetStringSafe("StatusDesc"),
+                    StatusId = reader.GetIntSafe("StatusId"),
                     TotalAmount = reader.GetDecimalSafe("TotalAmount"),
                     CustomerName = reader.GetStringSafe("CustomerName")!,
                     CustomerPhone = reader.GetStringSafe("CustomerPhone")!
                 });
             }
 
-            return list;
+            await reader.NextResultAsync();
+
+            if (await reader.ReadAsync())
+                totalCount = reader.GetInt32(reader.GetOrdinal("TotalCount"));
+
+            return (totalCount, items);
         }
+
 
         public Task<int> SaveChangesAsync()
         {

@@ -4,15 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingSystem.Application.DTOs
+namespace OrderingSystem.Application.DTOs.Products
 {
-    public class ProductDto
+    public class UpdateProductDto
     {
-        public int Id { get; set; }
         public string Name { get; set; } = "";
-        public string SKU { get; set; } = "";
+        public string SKU { get; set; } = "";  
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
-        public bool IsActive { get; set; }
     }
 }
