@@ -1,17 +1,12 @@
 ﻿using OrderingSystem.Domain.Common;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderingSystem.Domain.DbModels
 {
     public class Products
     {
-
-        private Products() { }
+        private Products() { } // EF Core
 
         public Products(string name, string sku, decimal price, int stockQuantity)
         {
@@ -19,22 +14,47 @@ namespace OrderingSystem.Domain.DbModels
             SKU = sku;
             Price = price;
             StockQuantity = stockQuantity;
+            CreatedAt = DateTime.UtcNow;
+            IsDeleted = false;
+            IsActive = true;
         }
-        [Key]
 
+        [Key]
         public int Id { get; private set; }
-        public string Name { get; private set; }
-        public string SKU { get; private set; }
+
+        [Required]
+        public string Name { get; private set; } = string.Empty;
+
+        [Required]
+        public string SKU { get; private set; } = string.Empty;
+
+        [Required]
         public decimal Price { get; private set; }
+
+        [Required]
         public int StockQuantity { get; private set; }
+
+        [Required]
         public DateTime CreatedAt { get; private set; }
+
         public bool IsActive { get; private set; }
         public bool IsDeleted { get; private set; }
 
-        public void Update(string name, decimal price)
+
+ 
+
+        public void Update(string name, string sku, decimal price, int stockQuantity)
         {
             Name = name;
+            SKU = sku;
             Price = price;
+            StockQuantity = stockQuantity;
+        }
+
+        public void MarkDeleted()
+        {
+            IsDeleted = true;
+            IsActive = false;
         }
 
         public void DecreaseStock(int qty)
@@ -46,7 +66,6 @@ namespace OrderingSystem.Domain.DbModels
                 throw new DomainException($"Insufficient stock for product SKU {SKU}.");
 
             StockQuantity -= qty;
-
         }
 
         public void IncreaseStock(int qty)
@@ -55,23 +74,23 @@ namespace OrderingSystem.Domain.DbModels
                 throw new DomainException("Quantity must be greater than 0.");
 
             StockQuantity += qty;
-
         }
-        public void MarkDeleted()
+ 
+
+        public static Products Create(string name, string sku, decimal price, int stockQuantity)
         {
-            IsDeleted = true;
+            return new Products(name, sku, price, stockQuantity);
         }
 
-        
         public static Products CreateFromDb(
-         int id,
-         string name,
-         string sku,
-         decimal price,
-         int stockQuantity,
-         DateTime createdAt,
-         bool isDeleted,
-         bool isActive)
+            int id,
+            string name,
+            string sku,
+            decimal price,
+            int stockQuantity,
+            DateTime createdAt,
+            bool isDeleted,
+            bool isActive)
         {
             return new Products
             {
@@ -84,8 +103,6 @@ namespace OrderingSystem.Domain.DbModels
                 IsDeleted = isDeleted,
                 IsActive = isActive
             };
-
         }
     }
 }
-    

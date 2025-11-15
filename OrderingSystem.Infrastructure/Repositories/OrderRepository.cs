@@ -193,7 +193,7 @@ namespace OrderingSystem.Infrastructure.Repositories
                 {
                     OrderId = reader.GetIntSafe("OrderId"),
                     OrderDate = reader.GetDateTimeSafe("OrderDate"),
-                    Status = reader.GetStringSafe("Status"),
+                    Status = reader.GetStringSafe("Status")??string.Empty,
                     TotalAmount = reader.GetDecimalSafe("TotalAmount"),
                     CustomerName = reader.GetStringSafe("CustomerName")!,
                     CustomerPhone = reader.GetStringSafe("CustomerPhone")!

@@ -35,9 +35,17 @@ namespace OrderingSystem.Infrastructure.Repositories
             await _context.Customers.AddRangeAsync(entities);
         }
 
-        public Task<int> CountAsync(string? nameFilter, string? emailFilter)
+        public async Task<int> CountAsync(string? nameFilter, string? emailFilter)
         {
-            throw new NotImplementedException();
+            var query = _context.Customers.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(nameFilter))
+                query = query.Where(c => c.Name.Contains(nameFilter));
+
+            if (!string.IsNullOrWhiteSpace(emailFilter))
+                query = query.Where(c => c.Email.Contains(emailFilter));
+
+            return await query.CountAsync();
         }
 
         public void Delete(Customers entity)
@@ -68,10 +76,9 @@ namespace OrderingSystem.Infrastructure.Repositories
         public async Task<List<Customers>> GetAllAsync()
         {
             return await _context.Customers
-                .Where(c => !c.IsDeleted && c.IsDeleted)
+                .Where(c => !c.IsDeleted)
                 .ToListAsync();
         }
-
         public async Task<Customers?> GetByIdAsync(int id)
         {
             return await _context.Customers.FindAsync(id);
@@ -88,7 +95,7 @@ namespace OrderingSystem.Infrastructure.Repositories
             using var conn = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             await conn.OpenAsync();
 
-            using var cmd = new SqlCommand("sp_GetCustomersPaged", conn)
+            using var cmd = new SqlCommand("GetCustomersPaged", conn)
             {
                 CommandType = CommandType.StoredProcedure
             };
@@ -104,9 +111,9 @@ namespace OrderingSystem.Infrastructure.Repositories
             {
                 list.Add(Customers.CreateFromDb(
                     reader.GetIntSafe("Id"),
-                    reader.GetStringSafe("Name"),
-                    reader.GetStringSafe("Email"),
-                    reader.GetStringSafe("Phone"),
+                    reader.GetStringSafe("Name")??string.Empty,
+                    reader.GetStringSafe("Email")??string.Empty,
+                    reader.GetStringSafe("Phone")??string.Empty,
                     reader.GetDateTimeSafe("CreatedAt"),
                     reader.GetBoolSafe("IsDeleted")
                 ));

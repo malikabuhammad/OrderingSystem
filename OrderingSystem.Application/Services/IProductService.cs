@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrderingSystem.Application.Services
 {
-    public interface IProductService
-    {
+     
         public interface IProductService
         {
             Task<(int TotalCount, List<ProductDto> Items)> GetPagedAsync(int pageNumber, int pageSize, string? search, string name, string sku);
@@ -18,4 +17,4 @@ namespace OrderingSystem.Application.Services
             Task<bool> DeleteAsync(int id);
         }
     }
-}
+ 

@@ -8,15 +8,11 @@ using System.Threading.Tasks;
 
 namespace OrderingSystem.Application.Services
 {
-    public interface IOrderService
-    {
-
+  
         public interface IOrderService
         {
             Task<CreateOrderResult> CreateAsync(CreateOrderItemDto dto);
-
             Task<OrderDetailsResult?> GetFullAsync(int id);
-
             Task<List<OrderListResult>> GetPagedAsync(
                 int pageNumber,
                 int pageSize,
@@ -26,4 +22,4 @@ namespace OrderingSystem.Application.Services
                 DateTime? endDate);
         }
     }
-}
+ 

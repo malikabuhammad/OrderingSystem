@@ -9,8 +9,12 @@ namespace OrderingSystem.Application.Services
 {
     public interface ICustomerService
     {
-        Task<List<CustomerDto>> GetPagedAsync(int pageNumber, int pageSize, string? name, string? email);
-        Task<int> CountAsync(string? name, string? email);
+        Task<(int TotalCount, List<CustomerDto> Items)> GetPagedAsync(
+    int pageNumber,
+    int pageSize,
+    string? name,
+    string? email);
+        //Task<int> CountAsync(string? name, string? email);
         Task<CustomerDto?> GetByIdAsync(int id);
         Task<CustomerDto> CreateAsync(CreateCustomerDto dto);
         Task<bool> DeleteAsync(int id);

@@ -17,7 +17,7 @@ namespace OrderingSystem.Domain.DbModels
         {
             CustomerId = customerId;
             OrderDate = orderDate;
-            StatusId = 1; // Pending
+            StatusId = 1; 
         }
 
         [Key]

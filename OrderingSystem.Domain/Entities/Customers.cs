@@ -10,7 +10,20 @@ namespace OrderingSystem.Domain.DbModels
 
     public class Customers
     {
-        private Customers() { } // EF Core
+        [Key]
+        public int Id { get; private set; }
+        [Required]
+        public string Name { get; private set; } = string.Empty;
+        [Required]
+        public string Email { get; private set; } = string.Empty;
+        [Required]
+        public string Phone { get; private set; } = string.Empty;
+        public DateTime CreatedAt { get; private set; }
+        public bool IsDeleted { get; private set; }
+        public bool IsActive { get; private set; }
+        public DateTime? DeletedAt { get; private set; }
+
+        private Customers() { }
 
         public Customers(string name, string email, string phone)
         {
@@ -18,9 +31,8 @@ namespace OrderingSystem.Domain.DbModels
             Email = email;
             Phone = phone;
         }
-        public static Customers CreateFromDb(
-        int id, string name, string email, string phone,
-        DateTime createdAt, bool isDeleted)
+        public static Customers CreateFromDb(int id, string name, string email, string phone,
+            DateTime createdAt, bool isDeleted)
         {
             return new Customers
             {
@@ -32,19 +44,30 @@ namespace OrderingSystem.Domain.DbModels
                 IsDeleted = isDeleted
             };
         }
-        [Key]
-
-        public int Id { get; private set; }
-        public string Name { get; private set; }
-        public string Email { get; private set; }
-        public string Phone { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-
-        public bool IsDeleted { get; private set; }
-        public bool IsActive { get; private set; }
-        public DateTime? DeletedAt { get; private set; }
-
-      
+        public static Customers Create(string name, string email, string phone)
+        {
+            return new Customers
+            {
+                Name = name,
+                Email = email,
+                Phone = phone,
+                CreatedAt = DateTime.UtcNow,
+                IsDeleted = false,
+                IsActive = true
+            };
+        }
+        public void Update(string name, string email, string phone)
+        {
+            Name = name;
+            Email = email;
+            Phone = phone;
+        }
+        public void MarkDeleted()
+        {
+            IsDeleted = true;
+            IsActive = false;
+            DeletedAt = DateTime.UtcNow;
+        }
     }
 
 }
