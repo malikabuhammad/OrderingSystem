@@ -25,7 +25,7 @@ namespace OrderingSystem.Infrastructure.Repositories
         private string ConnStr => _config.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 
-        public async Task<(int TotalCount, List<Products> Items)> GetPagedAsync(int pageNumber, int pageSize, string? search)
+        public async Task<(int TotalCount, List<Products> Items)> GetPagedAsync(int pageNumber, int pageSize, string? search, string Name, string SKU)
         {
             var items = new List<Products>();
             int totalCount = 0;

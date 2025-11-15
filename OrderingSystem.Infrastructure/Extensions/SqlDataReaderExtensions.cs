@@ -27,12 +27,12 @@ namespace OrderingSystem.Infrastructure.Extensions
             public static string? GetStringSafe(this SqlDataReader reader, string columnName)
             {
                 int ordinal = reader.GetOrdinal(columnName);
-                return reader.IsDBNull(ordinal) ? null : reader.GetString(ordinal);
+                return reader.IsDBNull(ordinal) ? "" : reader.GetString(ordinal);
             }
 
             public static string? GetStringSafe(this SqlDataReader reader, int ordinal)
             {
-                return reader.IsDBNull(ordinal) ? null : reader.GetString(ordinal);
+                return reader.IsDBNull(ordinal) ? "" : reader.GetString(ordinal);
             }
 
  
