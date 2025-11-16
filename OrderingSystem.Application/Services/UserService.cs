@@ -51,7 +51,7 @@ namespace OrderingSystem.Application.Services
             if (user == null)
                 return new Result { Success = false, Message = "User not found" };
 
-            await _repo.RemoveAsync(user);
+            user.Deactivate();
 
             await _repo.SaveAsync();
 

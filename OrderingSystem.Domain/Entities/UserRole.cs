@@ -21,5 +21,7 @@ namespace OrderingSystem.Domain.Entities
             UserId = userId;
             RoleId = roleId;
         }
+
+       
     }
 }
