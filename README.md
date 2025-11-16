@@ -36,11 +36,15 @@ The Order Management API provides a complete backend solution for managing custo
 - 
 ## Architecture (Clean/DDD Hybrid)
 
-OrderingSystem.Api/ # Controllers, Swagger, JWT setup
-OrderingSystem.Application/ # Services, DTOs, Interfaces
-OrderingSystem.Domain/ # Entities, ValueObjects, Exceptions
-OrderingSystem.Infrastructure/ # EF Core, Repositories, SQL, Dapper
-OrderingSystem.Tests/ # Unit tests
+-OrderingSystem.Api/  Controllers, Swagger, JWT setup
+
+-OrderingSystem.Application/  Services, DTOs, Interfaces
+
+-OrderingSystem.Domain/  Entities, ValueObjects, Exceptions
+
+-OrderingSystem.Infrastructure/ EF Core, Repositories, SQL, Dapper
+
+-OrderingSystem.Tests/  Unit tests
 
 ## Tech Stack
 
