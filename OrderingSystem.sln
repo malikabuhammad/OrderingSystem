@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderingSystem.Tests.Applic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderingSystem.Tests.Infrastructure", "OrderingSystem.Tests.Infrastructure\OrderingSystem.Tests.Infrastructure.csproj", "{FAB35B84-9266-4FFA-89A2-007AB59D7C3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderingSystem.Tests.Ap", "OrderingSystem.Tests.Ap\OrderingSystem.Tests.Ap.csproj", "{177218B3-0714-4BC8-B8D6-979FB761A486}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderingSystem.Tests.Api", "OrderingSystem.Tests.Ap\OrderingSystem.Tests.Api.csproj", "{177218B3-0714-4BC8-B8D6-979FB761A486}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

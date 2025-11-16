@@ -15,6 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OrderingSystem.Api\OrderingSystem.Api.csproj" />
+    <ProjectReference Include="..\OrderingSystem.Application\OrderingSystem.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
