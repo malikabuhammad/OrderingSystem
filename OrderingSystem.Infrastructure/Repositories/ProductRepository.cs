@@ -41,6 +41,8 @@ namespace OrderingSystem.Infrastructure.Repositories
             cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
             cmd.Parameters.AddWithValue("@PageSize", pageSize);
             cmd.Parameters.AddWithValue("@Search", (object?)search ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@SKU", (object?)SKU ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Name", (object?)Name ?? DBNull.Value);
 
             using var reader = await cmd.ExecuteReaderAsync();
 

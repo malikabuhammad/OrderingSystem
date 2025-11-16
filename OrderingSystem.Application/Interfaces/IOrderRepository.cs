@@ -1,5 +1,6 @@
 ﻿using OrderingSystem.Application.DTOs.Orders;
 using OrderingSystem.Application.Repositories;
+using OrderingSystem.Application.Shared;
 using OrderingSystem.Domain.DbModels;
 using OrderingSystem.Domain.ProcedureEntities;
 using System;
@@ -16,7 +17,7 @@ namespace OrderingSystem.Application.Interfaces
 
         Task<OrderDetailsResult?> GetFullOrderAsync(int id);
         Task<(int TotalCount, List<OrderListResult> Items)> GetPagedOrdersAsync(int pageNumber,int pageSize,int? customerId,int? status,DateTime? startDate,DateTime? endDate);
-
+        //Task<Result> DeleteAsync(int id);
         Task<int> CountAsync(
             int? customerId,
             int? status,

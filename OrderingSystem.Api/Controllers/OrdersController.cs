@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderingSystem.Application.DTOs.Orders;
 using OrderingSystem.Application.Services;
 
@@ -6,6 +7,7 @@ namespace OrderingSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _service;
@@ -25,7 +27,7 @@ namespace OrderingSystem.Api.Controllers
             DateTime? endDate = null)
         {
             var items = await _service.GetPagedAsync(pageNumber, pageSize, customerId, status, startDate, endDate);
- 
+
             return Ok(new { items.TotalCount, items.Items });
         }
 
@@ -43,57 +45,26 @@ namespace OrderingSystem.Api.Controllers
             var result = await _service.CreateAsync(dto);
             return Ok(result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateStatus/{id}")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateOrderStatusDto dto)
         {
-            var order = await _service.GetFullAsync(id);
-            if (order == null) return NotFound();
+            dto.OrderId = id;  
 
-            if (order.StatusId == 4) return BadRequest("Cannot update cancelled order.");
-            if (order.StatusId == 3) return BadRequest("Cannot update shipped order.");
-
-            using var conn = new Microsoft.Data.SqlClient.SqlConnection(
-                HttpContext.RequestServices.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection"));
-
-            await conn.OpenAsync();
-
-            using var cmd = new Microsoft.Data.SqlClient.SqlCommand("UpdateOrderStatus", conn)
-            {
-                CommandType = System.Data.CommandType.StoredProcedure
-            };
-
-            cmd.Parameters.AddWithValue("@OrderId", id);
-            cmd.Parameters.AddWithValue("@NewStatusId", dto.StatusId);
-
-            await cmd.ExecuteNonQueryAsync();
+            var result = await _service.UpdateStatusAsync(dto);
 
             return Ok(new { Success = true });
         }
 
-        [HttpDelete("DeleteOrder/{id}")]
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var order = await _service.GetFullAsync(id);
-            if (order == null) return NotFound();
-
-            if (order.StatusId != 1) return BadRequest("Only pending orders can be deleted.");
-
-            using var conn = new Microsoft.Data.SqlClient.SqlConnection(
-                HttpContext.RequestServices.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection"));
-
-            await conn.OpenAsync();
-
-            using var cmd = new Microsoft.Data.SqlClient.SqlCommand("DeleteOrder", conn)
-            {
-                CommandType = System.Data.CommandType.StoredProcedure
-            };
-
-            cmd.Parameters.AddWithValue("@OrderId", id);
-
-            await cmd.ExecuteNonQueryAsync();
-
-            return Ok(new { Success = true });
+            var result = await _service.DeleteAsync(id);
+            if (!result.Success)
+                return BadRequest(result.Message);
+            return Ok(result);
         }
     }
 }

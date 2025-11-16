@@ -1,4 +1,5 @@
 ﻿using OrderingSystem.Application.DTOs.Orders;
+using OrderingSystem.Application.Shared;
 using OrderingSystem.Domain.ProcedureEntities;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace OrderingSystem.Application.Services
         Task<OrderDetailsResult?> GetFullAsync(int id);
         Task<(int TotalCount, List<OrderListResult> Items)> GetPagedAsync(int pageNumber, int pageSize, int? customerId, int? statusId, DateTime? startDate, DateTime? endDate);
         Task<bool> UpdateStatusAsync(UpdateOrderStatusDto dto);
+        Task<Result> DeleteAsync(int id);
     }
 }
 

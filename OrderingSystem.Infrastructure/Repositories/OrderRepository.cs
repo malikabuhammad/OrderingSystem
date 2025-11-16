@@ -167,54 +167,54 @@ namespace OrderingSystem.Infrastructure.Repositories
         }
 
         public async Task<(int TotalCount, List<OrderListResult> Items)> GetPagedOrdersAsync(
-    int pageNumber,
-    int pageSize,
-    int? customerId,
-    int? status,
-    DateTime? startDate,
-    DateTime? endDate)
-        {
-            var items = new List<OrderListResult>();
-            int totalCount = 0;
-
-            using var conn = new SqlConnection(ConnStr);
-            await conn.OpenAsync();
-
-            using var cmd = new SqlCommand("GetOrdersPaged", conn)
+        int pageNumber,
+        int pageSize,
+        int? customerId,
+        int? status,
+        DateTime? startDate,
+        DateTime? endDate)
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                var items = new List<OrderListResult>();
+                int totalCount = 0;
 
-            cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
-            cmd.Parameters.AddWithValue("@PageSize", pageSize);
-            cmd.Parameters.AddWithValue("@CustomerId", (object?)customerId ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@StatusId", (object?)status ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@StartDate", (object?)startDate ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@EndDate", (object?)endDate ?? DBNull.Value);
+                using var conn = new SqlConnection(ConnStr);
+                await conn.OpenAsync();
 
-            using var reader = await cmd.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
-            {
-                items.Add(new OrderListResult
+                using var cmd = new SqlCommand("GetOrdersPaged", conn)
                 {
-                    OrderId = reader.GetIntSafe("OrderId"),
-                    OrderDate = reader.GetDateTimeSafe("OrderDate"),
-                    StatusDesc = reader.GetStringSafe("StatusDesc"),
-                    StatusId = reader.GetIntSafe("StatusId"),
-                    TotalAmount = reader.GetDecimalSafe("TotalAmount"),
-                    CustomerName = reader.GetStringSafe("CustomerName")!,
-                    CustomerPhone = reader.GetStringSafe("CustomerPhone")!
-                });
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", pageSize);
+                cmd.Parameters.AddWithValue("@CustomerId", (object?)customerId ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@StatusId", (object?)status ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@StartDate", (object?)startDate ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@EndDate", (object?)endDate ?? DBNull.Value);
+
+                using var reader = await cmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    items.Add(new OrderListResult
+                    {
+                        OrderId = reader.GetIntSafe("OrderId"),
+                        OrderDate = reader.GetDateTimeSafe("OrderDate"),
+                        StatusDesc = reader.GetStringSafe("StatusDesc"),
+                        StatusId = reader.GetIntSafe("StatusId"),
+                        TotalAmount = reader.GetDecimalSafe("TotalAmount"),
+                        CustomerName = reader.GetStringSafe("CustomerName")!,
+                        CustomerPhone = reader.GetStringSafe("CustomerPhone")!
+                    });
+                }
+
+                await reader.NextResultAsync();
+
+                if (await reader.ReadAsync())
+                    totalCount = reader.GetInt32(reader.GetOrdinal("TotalCount"));
+
+                return (totalCount, items);
             }
-
-            await reader.NextResultAsync();
-
-            if (await reader.ReadAsync())
-                totalCount = reader.GetInt32(reader.GetOrdinal("TotalCount"));
-
-            return (totalCount, items);
-        }
 
 
         public Task<int> SaveChangesAsync()

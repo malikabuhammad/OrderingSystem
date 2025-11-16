@@ -25,6 +25,8 @@ namespace OrderingSystem.Domain.DbModels
         public int CustomerId { get; private set; }
         public DateTime OrderDate { get; private set; }
         public int StatusId { get; private set; }
+        public bool IsActive { get; private set; }
+        public bool IsDeleted { get; private set; }
         public decimal TotalAmount { get; private set; }
         public IReadOnlyCollection<OrderItems> Items => _items;
         public void AddItem(OrderItems item)
@@ -45,11 +47,21 @@ namespace OrderingSystem.Domain.DbModels
             TotalAmount = _items.Sum(x => x.LineTotal);
 
         }
-        public void UpdateStatus(int statusId)
+        public void UpdateStatus(int newStatus)
         {
-            StatusId = statusId;
-        }
+            if (StatusId == 4)
+                throw new DomainException("Cannot update cancelled order.");
 
+            if (StatusId == 3)
+                throw new DomainException("Cannot update shipped order.");
+
+            StatusId = newStatus;
+        }
+        public void MarkDeleted()
+        {
+            IsDeleted = true;
+            IsActive = false;
+        }
 
 
     }

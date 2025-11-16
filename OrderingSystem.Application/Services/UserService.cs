@@ -18,20 +18,20 @@ namespace OrderingSystem.Application.Services
 
         public async Task<Result> AddUserAsync(AddUserDto dto)
         {
-             var existing = await _repo.GetByUsernameAsync(dto.Username);
+            var existing = await _repo.GetByUsernameAsync(dto.Username);
             if (existing != null)
                 return new Result { Success = false, Message = "Username already exists" };
 
-             var user = User.Create(dto.Username, dto.Password);
+            var user = User.Create(dto.Username, dto.Password);
 
-             await _repo.AddAsync(user);
+            await _repo.AddAsync(user);
             await _repo.SaveAsync();
- 
+
 
             return new Result { Success = true, Message = "User created successfully" };
         }
 
- 
+
         public async Task<Result> EditUserAsync(int id, EditUserDto dto)
         {
             var user = await _repo.GetByIdAsync(id);
@@ -39,12 +39,12 @@ namespace OrderingSystem.Application.Services
                 return new Result { Success = false, Message = "User not found" };
 
             user.UpdateUsername(dto.Username);
- 
+
             await _repo.SaveAsync();
- 
+
             return new Result { Success = true, Message = "User updated" };
         }
- 
+
         public async Task<Result> DeleteUserAsync(int id)
         {
             var user = await _repo.GetByIdAsync(id);

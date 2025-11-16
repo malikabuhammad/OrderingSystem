@@ -16,7 +16,12 @@ public class UserRepository : IUserRepository
         => _ctx.Users.FirstOrDefaultAsync(x => x.Id == id);
 
     public Task<User?> GetByUsernameAsync(string username)
-        => _ctx.Users.FirstOrDefaultAsync(x => x.Username == username);
+    {
+        return _ctx.Users
+            .Include(u => u.Roles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(x => x.Username == username);
+    }
 
     public async Task AddAsync(User user)
         => await _ctx.Users.AddAsync(user);

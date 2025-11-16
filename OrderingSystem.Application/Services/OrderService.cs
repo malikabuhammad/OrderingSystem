@@ -1,5 +1,6 @@
 ﻿using OrderingSystem.Application.DTOs.Orders;
 using OrderingSystem.Application.Interfaces;
+using OrderingSystem.Application.Shared;
 using OrderingSystem.Domain.ProcedureEntities;
 using System;
 using System.Collections.Generic;
@@ -57,8 +58,6 @@ namespace OrderingSystem.Application.Services
               endDate);
         }
 
-       
-
         public async Task<bool> UpdateStatusAsync(UpdateOrderStatusDto dto)
         {
             var order = await _repo.GetByIdAsync(dto.OrderId);
@@ -70,5 +69,26 @@ namespace OrderingSystem.Application.Services
             await _repo.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Result> DeleteAsync(int id)
+        {
+            var order = await _repo.GetByIdAsync(id);
+            if (order == null)
+                return new Result {Success=false,Message= "Order not found" };
+
+            if (order.StatusId == 3)
+                return new Result { Success = false, Message = "Cannot delete shipped orders." };
+ 
+            if (order.StatusId == 4)
+                return new Result { Success = false, Message = "Cannot delete cancelled orders." };
+
+            order.MarkDeleted(); 
+
+            await _repo.SaveChangesAsync();
+
+            return new Result { Success = true, Message = "Order deleted successfully" };
+        }
+
+
     }
 }

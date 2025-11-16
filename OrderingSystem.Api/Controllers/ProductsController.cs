@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderingSystem.Application.Services;
 using OrderingSystem.Application.DTOs.Products;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OrderingSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _service;
@@ -49,7 +51,9 @@ namespace OrderingSystem.Api.Controllers
             if (item == null) return NotFound();
             return Ok(item);
         }
+       
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteProduct/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
