@@ -51,50 +51,50 @@ namespace OrderingSystem.Application.Services
         }
 
 
-        public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
-        {
-            var existing = await _users.GetByUsernameAsync(dto.Username);
-            if (existing != null)
-            {
-                return new AuthResponseDto
-                {
-                    Success = false,
-                    Message = "Username already exists."
-                };
-            }
+        //public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
+        //{
+        //    var existing = await _users.GetByUsernameAsync(dto.Username);
+        //    if (existing != null)
+        //    {
+        //        return new AuthResponseDto
+        //        {
+        //            Success = false,
+        //            Message = "Username already exists."
+        //        };
+        //    }
 
-            var hash = HashPassword(dto.Password);
-            var user = User.Create(dto.Username, hash);
-            await _users.AddAsync(user);
-            await _users.SaveAsync();
-            foreach (var roleName in dto.Roles)
-            {
-                var role = await _users.GetRoleAsync(roleName);
-                if (role == null)
-                {
-                    return new AuthResponseDto
-                    {
-                        Success = false,
-                        Message = $"Role '{roleName}' does not exist."
-                    };
-                }
+        //    var hash = HashPassword(dto.Password);
+        //    var user = User.Create(dto.Username, hash);
+        //    await _users.AddAsync(user);
+        //    await _users.SaveAsync();
+        //    foreach (var roleName in dto.Roles)
+        //    {
+        //        var role = await _users.GetRoleAsync(roleName);
+        //        if (role == null)
+        //        {
+        //            return new AuthResponseDto
+        //            {
+        //                Success = false,
+        //                Message = $"Role '{roleName}' does not exist."
+        //            };
+        //        }
 
-                await _users.AddRoleToUserAsync(user.Id, role.Id);
-            }
+        //        await _users.AddRoleToUserAsync(user.Id, role.Id);
+        //    }
 
-            await _users.SaveAsync();
+        //    await _users.SaveAsync();
 
-            var token = GenerateJwtToken(user);
+        //    var token = GenerateJwtToken(user);
 
-            return new AuthResponseDto
-            {
-                Success = true,
-                Message = "Registration successful.",
-                Token = token,
-                Username = user.Username,
-                Roles = dto.Roles
-            };
-        }
+        //    return new AuthResponseDto
+        //    {
+        //        Success = true,
+        //        Message = "Registration successful.",
+        //        Token = token,
+        //        Username = user.Username,
+        //        Roles = dto.Roles
+        //    };
+        //}
 
 
         private string GenerateJwtToken(User user)

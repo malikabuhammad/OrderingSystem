@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace OrderingSystem.Domain.Entities
 {
@@ -14,8 +9,10 @@ namespace OrderingSystem.Domain.Entities
         public string PasswordHash { get; private set; } = "";
         public bool IsActive { get; private set; }
         public List<UserRole> Roles { get; private set; } = new();
-        private User() { }
 
+        private User() { } // EF Core
+
+        // Factory method
         public static User Create(string username, string passwordHash)
         {
             return new User
@@ -25,10 +22,20 @@ namespace OrderingSystem.Domain.Entities
                 IsActive = true
             };
         }
-        public void AssignRole(int roleId)
+
+         public void UpdateUsername(string username)
+        {
+            Username = username;
+        }
+
+         public void Deactivate()
+        {
+            IsActive = false;
+        }
+
+         public void AssignRole(int roleId)
         {
             Roles.Add(new UserRole(Id, roleId));
         }
     }
-
 }

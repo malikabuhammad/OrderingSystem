@@ -3,44 +3,35 @@ using OrderingSystem.Application.Interfaces;
 using OrderingSystem.Domain.Entities;
 using OrderingSystem.Infrastructure.Persistence;
 
-namespace OrderingSystem.Infrastructure.Repositories
+public class UserRepository : IUserRepository
 {
-    public class UserRepository : IUserRepository
+    private readonly OrderingDbContext _ctx;
+
+    public UserRepository(OrderingDbContext ctx)
     {
-        private readonly OrderingDbContext _ctx;
-
-        public UserRepository(OrderingDbContext ctx)
-        {
-            _ctx = ctx;
-        }
-
-        public Task<User?> GetByUsernameAsync(string username)
-        {
-            return _ctx.Users
-                .Include(u => u.Roles)
-                    .ThenInclude(ur => ur.Role)
-                .FirstOrDefaultAsync(u => u.Username == username);
-        }
-
-        public async Task AddAsync(User user)
-        {
-            await _ctx.Users.AddAsync(user);
-        }
-
-        public Task<Role?> GetRoleAsync(string roleName)
-        {
-            return _ctx.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
-        }
-
-        public async Task AddRoleToUserAsync(int userId, int roleId)
-        {
-            var ur = new UserRole(userId, roleId);
-            await _ctx.UserRoles.AddAsync(ur);
-        }
-
-        public Task SaveAsync()
-        {
-            return _ctx.SaveChangesAsync();
-        }
+        _ctx = ctx;
     }
+
+    public Task<User?> GetByIdAsync(int id)
+        => _ctx.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+    public Task<User?> GetByUsernameAsync(string username)
+        => _ctx.Users.FirstOrDefaultAsync(x => x.Username == username);
+
+    public async Task AddAsync(User user)
+        => await _ctx.Users.AddAsync(user);
+
+    public Task UpdateAsync(User user)
+    {
+        _ctx.Users.Update(user);
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveAsync(User user)
+    {
+        _ctx.Users.Remove(user);
+        return Task.CompletedTask;
+    }
+
+    public Task SaveAsync() => _ctx.SaveChangesAsync();
 }
