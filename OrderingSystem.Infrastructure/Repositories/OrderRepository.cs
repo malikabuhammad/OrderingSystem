@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OrderingSystem.Application.DTOs.Orders;
 using OrderingSystem.Application.Interfaces;
+using OrderingSystem.Application.Shared;
 using OrderingSystem.Domain.DbModels;
 using OrderingSystem.Domain.ProcedureEntities;
 using OrderingSystem.Infrastructure.Extensions;
@@ -98,6 +99,8 @@ namespace OrderingSystem.Infrastructure.Repositories
         {
             _context.Orders.Remove(entity);
         }
+
+  
 
         public Task<List<Orders>> FindAsync(Expression<Func<Orders, bool>> predicate)
         {
@@ -225,6 +228,35 @@ namespace OrderingSystem.Infrastructure.Repositories
         public void Update(Orders entity)
         {
             _context.Orders.Update(entity);
+        }
+
+        
+        public async Task<Result> DeleteAsync(int id)
+        {
+            using var conn = new SqlConnection(ConnStr);
+            await conn.OpenAsync();
+
+            using var cmd = new SqlCommand("DeleteOrder", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@OrderId", id);
+
+            try
+            {
+                await cmd.ExecuteNonQueryAsync();
+                return new Result { Success = true, Message = "Order deleted successfully" };
+            }
+            catch (SqlException ex)
+            {
+                return new Result { Success = false, Message = ex.Message };
+            }
+            catch (Exception ex)
+            {
+                return new Result { Success = false, Message = "Unexpected error: " + ex.Message };
+
+            }
         }
     }
 }

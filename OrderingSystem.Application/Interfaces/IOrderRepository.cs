@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 
 namespace OrderingSystem.Application.Interfaces
 {
-    public interface IOrderRepository : IRepository<Orders>
+    public interface IOrderRepository  :IRepository<Orders>
     {
         Task<CreateOrderResult> CreateOrderAsync(int customerId, List<CreateOrderItemDto> items);
 
         Task<OrderDetailsResult?> GetFullOrderAsync(int id);
         Task<(int TotalCount, List<OrderListResult> Items)> GetPagedOrdersAsync(int pageNumber,int pageSize,int? customerId,int? status,DateTime? startDate,DateTime? endDate);
-        //Task<Result> DeleteAsync(int id);
+        Task<Result> DeleteAsync(int id);
         Task<int> CountAsync(
             int? customerId,
             int? status,
             DateTime? startDate,
             DateTime? endDate);
-    }
+     }
 }

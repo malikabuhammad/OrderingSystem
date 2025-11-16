@@ -81,10 +81,8 @@ namespace OrderingSystem.Application.Services
  
             if (order.StatusId == 4)
                 return new Result { Success = false, Message = "Cannot delete cancelled orders." };
-
-            order.MarkDeleted(); 
-
-            await _repo.SaveChangesAsync();
+ 
+            await _repo.DeleteAsync(id);
 
             return new Result { Success = true, Message = "Order deleted successfully" };
         }
